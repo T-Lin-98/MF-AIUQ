@@ -1,21 +1,21 @@
-# MF-AIUQ
+# Model-Free *Ab Initio* Uncertainty Quantification in Scattering analysis of Microscopy (MF-AIUQ)
 
-**Model-Free Ab Initio Uncertainty Quantification for Scattering Analysis of Microscopy**
 
-[![R](https://img.shields.io/badge/R-%E2%89%A54.2-276DC3?logo=r&logoColor=white)](https://www.r-project.org/)
+[![R](https://img.shields.io/badge/R-276DC3?logo=r&logoColor=white)](https://www.r-project.org/)
 [![AIUQ](https://img.shields.io/badge/AIUQ-CRAN-1F6F8B)](https://cran.r-project.org/package=AIUQ)
 [![Paper](https://img.shields.io/badge/arXiv-2605.29424-B31B1B)](https://arxiv.org/abs/2605.29424)
 
-Model-Free *ab initio* uncertainty quantification (MF-AIUQ) estimates mean squared displacement (MSD) and its uncertainty directly
-from microscopy videos with uncertainty quantification. The estimated MSD can be used to compute the storage
-and loss moduli through the generalized Stokes–Einstein relation.
+
+This repository provides the code used to reproduce the simulations and experimental analysis in
+[Model-free estimation in scattering analysis of microscopy](https://arxiv.org/abs/2605.29424).
+
+MF-AIUQ estimates the mean squared displacement (MSD) and its uncertainty directly from microscopy videos. 
+The estimated MSD and confidence interval can be used to further compute the viscoelastic storage and loss moduli through the generalized
+Stokes–Einstein relation. MF-AIUQ is implemented in the
+[`AIUQ`](https://cran.r-project.org/package=AIUQ) R package.
 
 
 ## Overview
-
-This repository provides code to reproduce the simulation and experimental results in the
-paper [Paper](https://arxiv.org/abs/2605.29424). The MF-AIUQ method is implemented in the
-[`AIUQ`](https://cran.r-project.org/package=AIUQ) R package. 
 
 · [Installation](#installation)
 · [Quick start](#quick-start)
@@ -23,14 +23,6 @@ paper [Paper](https://arxiv.org/abs/2605.29424). The MF-AIUQ method is implement
 · [Reproduce results](#reproducing-the-results)
 · [Data](#data-availability)
 · [Citation](#citation)
-
-
-
-- Brownian, fractional Brownian, Ornstein–Uhlenbeck, and mixed-process
-  simulations;
-- PVA microscopy experiments;
-- PEG hydrogel microscopy experiments; and
-- snail mucin MSD and microrheology analysis.
 
 
 ## Installation
