@@ -81,10 +81,9 @@ Select the desired scenario by following the comments in the script.
 
 After downloading the data from Zenodo (link to be attached), run the script corresponding to each of the experiments:
 
-- [`real_eg_1_PVA.R`](code/real-data/real_eg_1_PVA.R) Microscopy videos of a 4% polyvinyl alcohol (PVA) solution with tracer particles of different sizes.
-- [`real_eg_2_PEG_hydrogel.R`](code/real-data/real_eg_2_PEG_hydrogel.R) Microscopy videos of tetraPEG hydrogels. Particle dynamics are examined at six selected times, which span the transition from early fluid-like stages to later more constrained dynamics.
-- [`real_eg_3_snail_mucin.R`](code/real-data/real_eg_3_snail_mucin.R) Microscopy video of snail mucin mixed with tracer particles.
-
+- [`real_eg_1_PVA.R`](code/real-data/real_eg_1_PVA.R) reproduces the results of experiments on a 4% polyvinyl alcohol (PVA) solution using tracer particles of different sizes.
+- [`real_eg_2_PEG_hydrogel.R`](code/real-data/real_eg_2_PEG_hydrogel.R) reproduces the results of tetraPEG hydrogel experiments at six selected times, spanning the transition from early fluid-like behavior to increasingly constrained particle dynamics.
+- [`real_eg_3_snail_mucin.R`](code/real-data/real_eg_3_snail_mucin.R) reproduces the results of a snail mucin sample mixed with tracer particles.
 
 ## Repository structure
 
