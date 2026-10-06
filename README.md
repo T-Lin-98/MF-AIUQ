@@ -56,7 +56,7 @@ sam_mf <- SAM(intensity = intensity, intensity_str = "SST_array", mindt = frame_
 Estimate storage and loss moduli from the MSD and 95% confidence interval:
 
 ```r
-moduli <- Get_Gp_Gpp_GSER(MSD_est = MSD_est, d_input = lag_times, MSD_lower = MSD_lower, MSD_upper = MSD_upper,
+moduli <- Get_Gp_Gpp_GSER(MSD_est = sam_mf@msd_est, d_input = sam_mf@d_input, MSD_lower = sam_mf@msd_lower, MSD_upper = sam_mf@msd_upper,
                           MSD_unit = MSD_unit, Temp = temperature, a = particle_radius
 )
 ```
