@@ -19,7 +19,7 @@ Stokes–Einstein relation. MF-AIUQ is implemented in the
 
 · [Installation](#installation)
 · [Quick start](#quick-start)
-· [Tutorial](tutorials/MF_AIUQ.Rmd)
+· [Tutorial](docs/MF_AIUQ_examples.html)
 · [Reproduce results](#reproducing-the-results)
 · [Data](#data)
 · [Citation](#citation)
@@ -61,8 +61,8 @@ moduli <- Get_Gp_Gpp_GSER(MSD_est = sam_mf@msd_est, d_input = sam_mf@d_input, MS
 )
 ```
 
-For detailed examples, see 
-[MF-AIUQ tutorial](tutorials/MF_AIUQ.Rmd).
+For detailed examples, see
+[MF-AIUQ tutorial](docs/MF_AIUQ_examples.html).
 
 ## Reproducing the results
 
@@ -97,9 +97,11 @@ MF-AIUQ/
 │       ├── real_eg_1_PVA.R
 │       ├── real_eg_2_PEG_hydrogel.R
 │       └── real_eg_3_snail_mucin.R
-├── tutorials/
-│   └── MF_AIUQ.Rmd
-└── data/
+├── data/
+│   └── example_video.tif
+└── docs/
+    ├── MF_AIUQ_examples.Rmd
+    └── MF_AIUQ_examples.html
 ```
 
 ## Data
