@@ -69,7 +69,12 @@ moduli <- Get_Gp_Gpp_GSER(MSD_est = sam_mf@msd_est, d_input = sam_mf@d_input, MS
 For detailed examples, see
 [MF-AIUQ tutorial](docs/MF_AIUQ_examples.html).
 
+
 ## Reproducing the results
+
+### Data
+
+The microscopy datasets for experimental analysis are published on [Zenodo](https://doi.org/10.5281/zenodo.23116476). The simulation datasets are not included since they can be generated using the script provided below.
 
 ### Simulation studies
 
@@ -84,7 +89,7 @@ Select the desired scenario by following the comments in the script.
 
 ### Experimental analyses
 
-After downloading the data from Zenodo (link to be attached), run the script corresponding to each of the experiments:
+After downloading the data from [Zenodo](https://doi.org/10.5281/zenodo.23116476), run the script corresponding to each of the experiments:
 
 - [`real_eg_1_PVA.R`](code/real-data/real_eg_1_PVA.R) reproduces the results of experiments on a 4% polyvinyl alcohol (PVA) solution using tracer particles of different sizes.
 - [`real_eg_2_PEG_hydrogel.R`](code/real-data/real_eg_2_PEG_hydrogel.R) reproduces the results of tetraPEG hydrogel experiments at six selected times, spanning the transition from early fluid-like behavior to increasingly constrained particle dynamics.
@@ -108,10 +113,6 @@ MF-AIUQ/
     ├── MF_AIUQ_examples.Rmd
     └── MF_AIUQ_examples.html
 ```
-
-## Data
-
-The microscopy datasets will be published on Zenodo. (need to add DOI and download instruction)
 
 ## Citation
 
