@@ -1,198 +1,122 @@
 ---
-title: "MF-AIUQ tutorial"
-output: rmarkdown::html_vignette
+title: "MF-AIUQ Examples"
+output:
+  rmarkdown::html_vignette:
+    toc: true
 date: "`r Sys.Date()`"
 vignette: >
-  %\VignetteIndexEntry{AIUQ tutorial}
+  %\VignetteIndexEntry{MF-AIUQ Examples}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(
+  echo = TRUE,
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.align = "center",
+  out.width = "90%"
 )
 ```
 
-In this vignette, we will demonstrate the core functionalities of the AIUQ package. These include estimating parameters and mean squared displacement(MSD) with associated uncertainties; simulating particle movements governed by various stochastic processes and generating corresponding intensity profiles to emulate microscopic images. More examples including the application of this package to real experimental data can be found on [GitHub](https://github.com/UncertaintyQuantification/AIUQ-R). 
-
-We start by importing the AIUQ library.
-```{r setup}
+```{r packages, message=FALSE, warning=FALSE}
 library(AIUQ)
 ```
 
-## Example 1: Simulate BM and get estimated parameters using BM model
+## Example 1: Model-free MSD estimation for simulated Brownian motion
 
-To illustrate the method, we simulate a data set using default values of the `simulation` class which corresponding to the Brownian Motion(BM). (`show()` prints the main parameters used in simulation.)
-```{r,fig.height = 3.5, fig.width = 3.5}
+Simulate Brownian motion and estimate its MSD without specifying a parametric form for the MSD. 
+Set `uncertainty = TRUE` to obtain the 95% confidence interval, shown as the shaded region.
+
+```{r simulation_bm, fig.height=4, fig.width=8}
 set.seed(1)
 
-sim_bm = simulation()
-show(sim_bm)
+sim_bm <- simulation(sz = 300, len_t = 300, sigma_bm = 0.5, model_name = "BM")
 
-## Plot simulated particle trajectory
+sam_mf <- SAM(sim_object = sim_bm, model_free_estimation = TRUE, uncertainty = TRUE)
+
+par(mfrow = c(1, 2))
 plot_traj(sim_bm)
-```
-
-```{r,fig.height = 3.5, fig.width = 7}
-par(mfrow=c(1,2))
-## Plot intensity profile for different frames 
-plot_intensity(sim_bm@intensity, sz=sim_bm@sz) #first frame 
-plot_intensity(sim_bm@intensity, sz=sim_bm@sz,frame=10, color=T) #10th frame, color image
-```
-
-Next, we can estimate the MSD and other parameters with selected fitting model. 
-```{r, fig.height = 3.5, fig.width = 7}
-## AIUQ method: use BM as fitted model 
-sam = SAM(sim_object=sim_bm, model_name='BM')
-show(sam)
-
-par(mfrow=c(1,2))
-## Plot true MSD and estimated MSD
-plot_MSD(object=sam, msd_truth=sam@msd_truth) #in log10 scale
-
-## Plot intensity in reciprocal space 
-plot_I_q_1 = matrix(sam@I_q[,1], sam@sz[1],sam@sz[2]) #first frame 
-plot3D::image2D(abs(fftshift(plot_I_q_1)),main="intensity in reciprocal space")
-
-```
-
-User can select wavevector q range via AIUQ_thr or index_q. 
-```{r}
-sam = SAM(sim_object=sim_bm, AIUQ_thr=c(0.99,0.6)) 
-#Note: Default model_name is "BM", it's ok to not specify this argument if want to fit with BM model 
-show(sam)
-
-sam = SAM(sim_object=sim_bm, index_q_AIUQ=5:50)
-show(sam)
-```
-
-## Example 2: Simulate BM with user defined parameters and get estimated MSD with uncertainty
-```{r, fig.height = 3.5, fig.width = 3.5}
-set.seed(1)
-
-## Simulation
-sim_bm = simulation(sz=100,len_t=100,sigma_bm=0.5)
-show(sim_bm)
-
-## Plot simulated particle trajectory
-plot_traj(sim_bm)
-```
-
-```{r, fig.height = 3.5, fig.width = 7}
-## AIUQ method: fitting using BM model with uncertainty quantification 
-sam = SAM(sim_object=sim_bm, uncertainty=T)
-show(sam)
-
-par(mfrow=c(1,2))
-## Plot true MSD and estimated MSD with uncertainty 
-plot_MSD(object=sam, msd_truth=sam@msd_truth) #in log10 scale 
-plot_MSD(object=sam, msd_truth=sam@msd_truth,log10=F) #in real scale
-```
-
-## Example 3: Simulate OU process and get estimated parameters using OU model
-```{r, fig.height = 3.5, fig.width = 7}
-set.seed(1)
-
-## Simulation
-sim_ou = simulation(sigma_ou=4, model_name="OU")
-show(sim_ou)
-
-par(mfrow=c(1,2))
-## Plot simulated particle trajectory
-plot_traj(sim_ou)
-
-## AIUQ method: fitting using OU model
-sam_ou = SAM(sim_object=sim_ou, model_name=sim_ou@model_name) 
-show(sam_ou)
-
-## Plot true MSD and estimated MSD with uncertainty
-plot_MSD(object=sam_ou, msd_truth=sam_ou@msd_truth) #in log10 scale
-```
-
-## Example 4: User defined MSD structure 
-```{r}
-set.seed(1)
-
-## Simulation
-sim_bm = simulation(sz=100,len_t=100,sigma_bm=0.5)
-show(sim_bm)
-
-## User defined MSD structure: function of parameters and 
-#                                          vector of lag times 
-msd_fn = function(param, d_input){
-  MSD = param[1]*d_input+param[2]*d_input^2
-}
-
-# show MSD and MSD gradient with a simple example 
-theta = c(2,1)
-d_input = 0:10
-model_name = "user_defined"
-MSD_list = get_MSD_with_grad(theta=theta,d_input=d_input,model_name=model_name,
-                             msd_fn=msd_fn)
-MSD_list$msd
-
-## AIUQ method: fitting using user_defined model 
-sam = SAM(sim_object=sim_bm, model_name=model_name, msd_fn=msd_fn, num_param=2)
-show(sam)
-```
-
-
-## Example 5: Simulate BM and get model-free MSD estimation 
-```{r}
-set.seed(1)
-
-## Simulation
-sim_bm = simulation(sz=100,len_t=100,sigma_bm = 0.5)
-sam_mf = SAM(sim_object = sim_bm, model_name = sim_bm@model_name, 
-          model_free_estimation = TRUE)
-show(sam_mf)
-
 plot_MSD(object = sam_mf, msd_truth = sam_mf@msd_truth)
 ```
 
-## Example 6: Real data and get model-free MSD estimation 
-```{r eval=FALSE}
-## Provide the time interval between consecutive frames and the pixel size
-mindt = 1
-pxsz = 1
-## intensity: intensity file, a space-by-space-by-time array
-## intensity_str: the structure of the input intensity data, "SST_array" for real data
-sam_mf = SAM(intensity = intensity, intensity_str = "SST_array",
-             mindt = mindt, pxsz = pxsz, model_free_estimation = TRUE)
 
-plot(log10(sam_mf@d_input), log10(sam_mf@msd_est), col = "blue", pch = 16,
-     xlab = expression(log[10](Delta * t)), ylab = expression(log[10](MSD)))
+
+## Example 2: Model-free MSD estimation for simulated Ornstein–Uhlenbeck process
+
+
+```{r simulation_ou, fig.height=4, fig.width=8}
+set.seed(1)
+
+sim_ou <- simulation(sz = 300, len_t = 300, sigma_ou = 4, rho = 0.95, model_name = "OU")
+
+sam_mf <- SAM(sim_object = sim_ou, model_free_estimation = TRUE, uncertainty = TRUE)
+
+par(mfrow = c(1, 2))
+plot_traj(sim_ou)
+plot_MSD(object = sam_mf, msd_truth = sam_mf@msd_truth)
 ```
 
 
 
-## Example 7: Real data and get storage and loss moduli estimation
-```{r, eval=FALSE}
-## MSD_unit, Temp, and a should be specified according to the experiment.
-## Modulus estimation requires uncertainty = TRUE so that MSD intervals can be used
-## for sampling. The medians of sampled Gp and Gpp are used as the estimate of 
-## storage and loss moduli.
-sam_mf = SAM(intensity = real_data, intensity_str = "SST_array",
-             pxsz = pxsz, mindt = mindt,
-             model_free_estimation = TRUE,
-             uncertainty = TRUE, M = M,
-             estimate_moduli = TRUE,
-             MSD_unit = MSD_unit, Temp = Temp, a = a)
+## Example 3: Model-free MSD estimation for experimental data
 
-GSER_MF_AIUQ = Get_Gp_Gpp_GSER(MSD_est = sam_mf@msd_est, d_input = sam_mf@d_input, 
-                               MSD_lower = sam_mf@msd_lower, MSD_upper = sam_mf@msd_upper,
-                               MSD_unit = 10^{-12}, kB = 1.380649*10^{-23}, Temp = 293, a = 250*10^{-9})
+Load a microscopy video and specify the minimum lag time and pixel size.
+
+```{r experimental-msd, warning=FALSE, fig.height=4, fig.width=8.5}
+library(bioimagetools)
+
+intensity <- readTIF("data/example_video.tif")
+
+mindt <- 6   # minimum lag time
+pxsz <- 0.1465   # pixel size
+M <- 200  # number of particles
+# For experimental data, the number of particles need to be specified to obtain
+# the 95% confidence interval.
+sam_mf <- SAM(intensity = intensity, intensity_str = "SST_array", mindt = mindt, pxsz = pxsz, 
+              M = M, model_free_estimation = TRUE, uncertainty = TRUE)
+
+lag_time <- sam_mf@d_input
+MSD_est <- sam_mf@msd_est
+MSD_lower <- sam_mf@msd_lower
+MSD_upper <- sam_mf@msd_upper
 
 
-
-plot(log10(sam_mf@omega), log10(sam_mf@Gp), type = "l", col = "blue",
-     xlab = expression(log[10](omega)), ylab = expression(log[10](modulus)))
-lines(log10(sam_mf@omega), log10(sam_mf@Gpp), col = "red")
-legend("topright", legend = c("G'", "G''"), col = c("blue", "red"), lty = 1)
+par(mfrow = c(1, 2), mar = c(5, 4, 4, 2))
+MSD_range <- range(c(MSD_lower[-1], MSD_upper[-1]), na.rm = TRUE)
+plot_intensity(intensity, intensity_str = "SST_array", frame = 1)
+par(mar = c(5, 6, 4, 2))
+plot(lag_time, MSD_est, log = "xy", type = "n", ylim = MSD_range,
+     xlab = expression(Delta * t ~ "[s]"), ylab = expression(MSD ~ "[" * mu * m^2 * "]"))
+polygon(c(lag_time, rev(lag_time)), c(MSD_lower, rev(MSD_upper)),
+        col = rgb(0.5, 0.5, 0.5, 0.5), border = NA)
+lines(lag_time, MSD_est, col = "blue", lwd = 2)
+points(lag_time, MSD_est, col = "blue", pch = 16)
 ```
 
 
+## Example 4: Estimate storage and loss moduli
+
+Storage and loss moduli can be estimated using MSD and its confidence interval through
+the generalized Stokes–Einstein relation.
+
+```{r moduli, fig.height=4.5, fig.width=6}
+moduli <- Get_Gp_Gpp_GSER(MSD_est = sam_mf@msd_est, d_input = sam_mf@d_input, 
+                          MSD_lower = sam_mf@msd_lower, MSD_upper = sam_mf@msd_upper,
+                          MSD_unit = 1e-12,  # square micrometers to square meters
+                          Temp = 293,     # absolute temperature in kelvin
+                          a = 250e-9      # particle radius in meters
+)
+
+modulus_range <- range(c(moduli$Gprime_est, moduli$Gdoubleprime_est), na.rm = TRUE)
+plot(moduli$omega, moduli$Gprime_est, log = "xy", type = "l", col = "blue", lwd = 2,
+     ylim = modulus_range, 
+     xlab = expression(omega ~ "[rad/s]"), 
+     ylab = expression(G*minute ~ "," ~ G*minute*minute ~ "[Pa]"))
+lines(moduli$omega, moduli$Gdoubleprime_est, col = "red", lwd = 2)
+legend("topleft", legend = c("Storage modulus G'", "Loss modulus G''"),
+       col = c("blue", "red"), lty = 1, lwd = 2, bty = "n")
+```
 
 
