@@ -5,6 +5,11 @@
 [![AIUQ](https://img.shields.io/badge/AIUQ-CRAN-1F6F8B)](https://cran.r-project.org/package=AIUQ)
 [![Paper](https://img.shields.io/badge/arXiv-2605.29424-B31B1B)](https://arxiv.org/abs/2605.29424)
 
+<p align="center">
+  <img src="docs/images/MF_AIUQ_workflow.png"
+       alt="MF-AIUQ workflow from microscopy images to MSD and viscoelastic moduli"
+       width="100%">
+</p>
 
 This repository provides the code used to reproduce the simulations and experimental analysis in
 [Model-free estimation in scattering analysis of microscopy](https://arxiv.org/abs/2605.29424).
