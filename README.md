@@ -38,6 +38,9 @@ Stokes–Einstein relation. MF-AIUQ is implemented in the
 
 ## Installation
 
+First, install [R](https://cran.r-project.org/) and [RStudio](https://posit.co/download/rstudio-desktop/). 
+R is the programming language used in this package, and RStudio is an integrated development environment (IDE) for running R code. The following installation commands are written in R and can be run in the RStudio Console.
+
 Install the AIUQ package from CRAN:
 
 ```r
