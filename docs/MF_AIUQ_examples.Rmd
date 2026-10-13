@@ -29,25 +29,26 @@ library(AIUQ)
 Simulate Brownian motion and estimate its MSD without specifying a parametric form for the MSD. 
 Set `uncertainty = TRUE` to obtain the 95% confidence interval, shown as the shaded region.
 
-```{r simulation_bm, fig.height=4, fig.width=8}
-set.seed(1)
+```{r simulation_bm, fig.height=8, fig.width=8}
+set.seed(2)
 
 sim_bm <- simulation(sz = 300, len_t = 300, sigma_bm = 0.5, model_name = "BM")
 
 sam_mf <- SAM(sim_object = sim_bm, model_free_estimation = TRUE, uncertainty = TRUE)
 
-par(mfrow = c(1, 2))
-plot_traj(sim_bm)
-plot_MSD(object = sam_mf, msd_truth = sam_mf@msd_truth)
+par(mfrow = c(2, 2), mar = c(5, 4, 4, 2))
+plot_traj(sim_bm) # plot trajectory
+plot_MSD(object = sam_mf, msd_truth = sam_mf@msd_truth, title = "True vs. Estimated MSD") # plot MSD
+isf <- calculate_ISF(sam_mf)
+plot_ISF(isf)
 ```
-
 
 
 ## Example 2: Model-free MSD estimation for simulated Ornstein–Uhlenbeck process
 
 
 ```{r simulation_ou, fig.height=4, fig.width=8}
-set.seed(1)
+set.seed(2)
 
 sim_ou <- simulation(sz = 300, len_t = 300, sigma_ou = 4, rho = 0.95, model_name = "OU")
 
@@ -55,16 +56,15 @@ sam_mf <- SAM(sim_object = sim_ou, model_free_estimation = TRUE, uncertainty = T
 
 par(mfrow = c(1, 2))
 plot_traj(sim_ou)
-plot_MSD(object = sam_mf, msd_truth = sam_mf@msd_truth)
+plot_MSD(object = sam_mf, msd_truth = sam_mf@msd_truth, title = "True vs. Estimated MSD")
 ```
-
 
 
 ## Example 3: Model-free MSD estimation for experimental data
 
 Load a microscopy video and specify the minimum lag time and pixel size.
 
-```{r experimental-msd, warning=FALSE, fig.height=4, fig.width=8.5}
+```{r experimental-msd, warning=FALSE, fig.height=8, fig.width=8.5}
 library(bioimagetools)
 
 intensity <- readTIF("data/example_video.tif")
@@ -82,17 +82,10 @@ MSD_est <- sam_mf@msd_est
 MSD_lower <- sam_mf@msd_lower
 MSD_upper <- sam_mf@msd_upper
 
-
-par(mfrow = c(1, 2), mar = c(5, 4, 4, 2))
-MSD_range <- range(c(MSD_lower[-1], MSD_upper[-1]), na.rm = TRUE)
+par(mfrow = c(2, 2), mar = c(5, 4, 4, 2))
 plot_intensity(intensity, intensity_str = "SST_array", frame = 1)
-par(mar = c(5, 6, 4, 2))
-plot(lag_time, MSD_est, log = "xy", type = "n", ylim = MSD_range,
-     xlab = expression(Delta * t ~ "[s]"), ylab = expression(MSD ~ "[" * mu * m^2 * "]"))
-polygon(c(lag_time, rev(lag_time)), c(MSD_lower, rev(MSD_upper)),
-        col = rgb(0.5, 0.5, 0.5, 0.5), border = NA)
-lines(lag_time, MSD_est, col = "blue", lwd = 2)
-points(lag_time, MSD_est, col = "blue", pch = 16)
+plot_intensity(intensity, intensity_str = "SST_array", frame = 50)
+plot_MSD(object = sam_mf, title = "Estimated MSD")
 ```
 
 
@@ -101,7 +94,7 @@ points(lag_time, MSD_est, col = "blue", pch = 16)
 Storage and loss moduli can be estimated using MSD and its confidence interval through
 the generalized Stokes–Einstein relation.
 
-```{r moduli, fig.height=4.5, fig.width=6}
+```{r moduli, fig.height=3, fig.width=4}
 moduli <- Get_Gp_Gpp_GSER(MSD_est = sam_mf@msd_est, d_input = sam_mf@d_input, 
                           MSD_lower = sam_mf@msd_lower, MSD_upper = sam_mf@msd_upper,
                           MSD_unit = 1e-12,  # square micrometers to square meters
@@ -109,14 +102,7 @@ moduli <- Get_Gp_Gpp_GSER(MSD_est = sam_mf@msd_est, d_input = sam_mf@d_input,
                           a = 250e-9      # particle radius in meters
 )
 
-modulus_range <- range(c(moduli$Gprime_est, moduli$Gdoubleprime_est), na.rm = TRUE)
-plot(moduli$omega, moduli$Gprime_est, log = "xy", type = "l", col = "blue", lwd = 2,
-     ylim = modulus_range, 
-     xlab = expression(omega ~ "[rad/s]"), 
-     ylab = expression(G*minute ~ "," ~ G*minute*minute ~ "[Pa]"))
-lines(moduli$omega, moduli$Gdoubleprime_est, col = "red", lwd = 2)
-legend("topleft", legend = c("Storage modulus G'", "Loss modulus G''"),
-       col = c("blue", "red"), lty = 1, lwd = 2, bty = "n")
+plot_moduli(moduli, units = c("rad/s", "Pa"), title = "Estimated Storage and Loss Moduli")
 ```
 
 
