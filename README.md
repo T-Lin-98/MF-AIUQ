@@ -86,9 +86,9 @@ The microscopy datasets for experimental analysis are published on [Zenodo](http
 
 ### Directory setup
 
-After downloading the microscopy datasets from [Zenodo](https://doi.org/10.5281/zenodo.23116476), place the TIFF files directly in the `data/` folder of this repository. Do not place them inside an additional subfolder.
+After downloading the microscopy datasets, place the TIFF files directly in the `data/` folder of this repository. 
 
-Before running any script, set the R working directory to the root of the downloaded repository—the folder containing `code/`, `data/`, and `results/`.
+Before running any script, set the R working directory to the root of the downloaded repository. (The folder containing `code/`, `data/`, and `results/`.)
 
 ```r
 # macOS or Linux
@@ -96,8 +96,15 @@ setwd("/Users/your_name/Desktop/MF-AIUQ")
 
 # Windows
 # setwd("C:/Users/your_name/Desktop/MF-AIUQ")
+```
+
+Replace the example path with the location of the repository on your computer. You can confirm the current working directory by running:
+```r
+getwd()
+```
 
 The directory should be organized as follows:
+```text
 MF-AIUQ/
 ├── code/
 ├── data/
@@ -106,10 +113,7 @@ MF-AIUQ/
 │   ├── snail_mucin.tif
 │   └── ...
 └── results/
-
-Replace the example path with the location of the repository on your computer. You can confirm the current working directory by running:
-```r
-getwd()
+```
 
 ### Simulation studies
 
