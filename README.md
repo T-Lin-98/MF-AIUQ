@@ -84,6 +84,33 @@ For detailed examples, see
 
 The microscopy datasets for experimental analysis are published on [Zenodo](https://doi.org/10.5281/zenodo.23116476). The simulation datasets are not included since they can be generated using the script provided below.
 
+### Directory setup
+
+After downloading the microscopy datasets from [Zenodo](https://doi.org/10.5281/zenodo.23116476), place the TIFF files directly in the `data/` folder of this repository. Do not place them inside an additional subfolder.
+
+Before running any script, set the R working directory to the root of the downloaded repository—the folder containing `code/`, `data/`, and `results/`.
+
+```r
+# macOS or Linux
+setwd("/Users/your_name/Desktop/MF-AIUQ")
+
+# Windows
+# setwd("C:/Users/your_name/Desktop/MF-AIUQ")
+
+The directory should be organized as follows:
+MF-AIUQ/
+├── code/
+├── data/
+│   ├── 4pct_PVA_1um_25C.tif
+│   ├── 20mgmL_25C_DMSO_13min.tif
+│   ├── snail_mucin.tif
+│   └── ...
+└── results/
+
+Replace the example path with the location of the repository on your computer. You can confirm the current working directory by running:
+```r
+getwd()
+
 ### Simulation studies
 
 [`simulation.R`](code/simulations/simulation.R) contains the parameter settings and implementation code for the simulation studies:
