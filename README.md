@@ -143,6 +143,7 @@ The corresponding plotting scripts reproduce the figures using the provided pres
   
 ## Repository structure
 
+```text
 MF-AIUQ/
 ├── README.md
 ├── code/
@@ -172,6 +173,7 @@ MF-AIUQ/
     ├── MF_AIUQ_examples.html
     └── images/
         └── MF_AIUQ_workflow.png
+```
 
 ## Citation
 
