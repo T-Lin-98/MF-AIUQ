@@ -28,6 +28,15 @@ library(bioimagetools)
 # "1 um", "200 nm", "100 nm", or "100 nm BF"
 scenario = "1 um"
 
+if (scenario == "1 um") {
+  file_name = "4pct_PVA_1um_25C"
+} else if (scenario == "200 nm") {
+  file_name = "4pct_PVA_200nm_25C"
+} else if (scenario == "100 nm") {
+  file_name = "4pct_PVA_100nm_25C"
+} else if (scenario == "100 nm BF") {
+  file_name = "4pct_PVA_100nm_25C_BF"
+}
 # Load the microscopy video from the data/ folder
 intensity=suppressWarnings(readTIF(paste0("../data/", file_name, ".tif")))
 
