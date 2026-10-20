@@ -116,7 +116,7 @@ MF-AIUQ/
 
 ### Simulation studies
 
-[`simulation_implement.R`](code/simulations/simulation_implement.R) contains the simulation and MF-AIUQ implementation for the following scenarios:
+[`simulation_implement.R`](code/simulation_implement.R) contains the simulation and MF-AIUQ implementation for the following scenarios:
 
 - slow and fast Brownian motion;
 - subdiffusive and superdiffusive fractional Brownian motion;
@@ -125,21 +125,21 @@ MF-AIUQ/
 
 Select the desired scenario by following the comments in the script. 
 
-The corresponding plotting script [`simulation_plot.R`](code/simulations/simulation_plot.R) reproduces the figures using the provided presaved records.
+The corresponding plotting script [`simulation_plot.R`](code/simulation_plot.R) reproduces the figures using the provided presaved records.
 
 ### Experimental analyses
 
 After downloading the data from [Zenodo](https://doi.org/10.5281/zenodo.23116476), use the corresponding implementation script to run MF-AIUQ:
 
-- [`real_eg_1_PVA_implement.R`](code/real-data/real_eg_1_PVA_implement.R) analyzes experiments on a 4% polyvinyl alcohol (PVA) solution using tracer particles of different sizes.
-- [`real_eg_2_PEG_hydrogel_implement.R`](code/real-data/real_eg_2_PEG_hydrogel_implement.R) analyzes tetraPEG hydrogel experiments at six selected times, spanning the transition from early fluid-like behavior to increasingly constrained particle dynamics.
-- [`real_eg_3_snail_mucin_implement.R`](code/real-data/real_eg_3_snail_mucin_implement.R) analyzes a snail mucin sample mixed with tracer particles.
+- [`real_eg_1_PVA_implement.R`](code/real_eg_1_PVA_implement.R) analyzes experiments on a 4% polyvinyl alcohol (PVA) solution using tracer particles of different sizes.
+- [`real_eg_2_PEG_hydrogel_implement.R`](code/real_eg_2_PEG_hydrogel_implement.R) analyzes tetraPEG hydrogel experiments at six selected times, spanning the transition from early fluid-like behavior to increasingly constrained particle dynamics.
+- [`real_eg_3_snail_mucin_implement.R`](code/real_eg_3_snail_mucin_implement.R) analyzes a snail mucin sample mixed with tracer particles.
 
 The corresponding plotting scripts reproduce the figures using the provided presaved records:
 
-- [`real_eg_1_PVA_plot.R`](code/real-data/real_eg_1_PVA_plot.R)
-- [`real_eg_2_PEG_hydrogel_plot.R`](code/real-data/real_eg_2_PEG_hydrogel_plot.R)
-- [`real_eg_3_snail_mucin_plot.R`](code/real-data/real_eg_3_snail_mucin_plot.R)
+- [`real_eg_1_PVA_plot.R`](code/real_eg_1_PVA_plot.R)
+- [`real_eg_2_PEG_hydrogel_plot.R`](code/real_eg_2_PEG_hydrogel_plot.R)
+- [`real_eg_3_snail_mucin_plot.R`](code/real_eg_3_snail_mucin_plot.R)
   
 ## Repository structure
 
@@ -147,16 +147,14 @@ The corresponding plotting scripts reproduce the figures using the provided pres
 MF-AIUQ/
 ├── README.md
 ├── code/
-│   ├── simulations/
-│   │   ├── simulation_implement.R
-│   │   └── simulation_plot.R
-│   └── real-data/
-│       ├── real_eg_1_PVA_implement.R
-│       ├── real_eg_1_PVA_plot.R
-│       ├── real_eg_2_PEG_hydrogel_implement.R
-│       ├── real_eg_2_PEG_hydrogel_plot.R
-│       ├── real_eg_3_snail_mucin_implement.R
-│       └── real_eg_3_snail_mucin_plot.R
+│   │── simulation_implement.R
+│   │── simulation_plot.R
+│   │── real_eg_1_PVA_implement.R
+│   ├── real_eg_1_PVA_plot.R
+│   ├── real_eg_2_PEG_hydrogel_implement.R
+│   ├── real_eg_2_PEG_hydrogel_plot.R
+│   ├── real_eg_3_snail_mucin_implement.R
+│   └── real_eg_3_snail_mucin_plot.R
 ├── data/
 │   ├── example_video.tif
 │   ├── 4pct_PVA_1um_25C_inset.tif
