@@ -86,27 +86,26 @@ The microscopy datasets for experimental analysis are published on [Zenodo](http
 
 ### Directory setup
 
+Before running any script, please make sure that the R working directory is the `code/` folder of the downloaded repository.
 After downloading the microscopy datasets, place the TIFF files directly in the `data/` folder of this repository. 
 
-Before running any script, set the R working directory to the root of the downloaded repository. (The folder containing `code/`, `data/`, and `results/`.)
-
+```r
+# Check the current working directory using
+getwd()
+```
+If necessary, replace the example path below with the location of the code/ folder on your computer:
 ```r
 # macOS or Linux
-setwd("/Users/your_name/Desktop/MF-AIUQ")
+setwd("/path/to/MF-AIUQ/code")
 
 # Windows
-# setwd("C:/Users/your_name/Desktop/MF-AIUQ")
-```
-
-Replace the example path with the location of the repository on your computer. You can confirm the current working directory by running:
-```r
-getwd()
+# setwd("C:/path/to/MF-AIUQ/code")
 ```
 
 The directory should be organized as follows:
 ```text
 MF-AIUQ/
-├── code/
+├── code/        ← R working directory
 ├── data/
 │   ├── 4pct_PVA_1um_25C.tif
 │   ├── 20mgmL_25C_DMSO_13min.tif
@@ -117,41 +116,61 @@ MF-AIUQ/
 
 ### Simulation studies
 
-[`simulation.R`](code/simulations/simulation.R) contains the parameter settings and implementation code for the simulation studies:
+[`simulation_implement.R`](code/simulations/simulation_implement.R) contains the simulation and MF-AIUQ implementation for the following scenarios:
 
 - slow and fast Brownian motion;
 - subdiffusive and superdiffusive fractional Brownian motion;
 - Ornstein–Uhlenbeck motion; and
 - a mixture of Ornstein–Uhlenbeck and fractional Brownian motion.
 
-Select the desired scenario by following the comments in the script.
+Select the desired scenario by following the comments in the script. 
+The corresponding plotting script [`simulation_plot.R`](code/simulations/simulation_plot.R) reproduces the figures using the provided presaved records.
 
 ### Experimental analyses
 
-After downloading the data from [Zenodo](https://doi.org/10.5281/zenodo.23116476), run the script corresponding to each of the experiments:
+After downloading the data from [Zenodo](https://doi.org/10.5281/zenodo.23116476), use the corresponding implementation script to run MF-AIUQ:
 
-- [`real_eg_1_PVA.R`](code/real-data/real_eg_1_PVA.R) reproduces the results of experiments on a 4% polyvinyl alcohol (PVA) solution using tracer particles of different sizes.
-- [`real_eg_2_PEG_hydrogel.R`](code/real-data/real_eg_2_PEG_hydrogel.R) reproduces the results of tetraPEG hydrogel experiments at six selected times, spanning the transition from early fluid-like behavior to increasingly constrained particle dynamics.
-- [`real_eg_3_snail_mucin.R`](code/real-data/real_eg_3_snail_mucin.R) reproduces the results of a snail mucin sample mixed with tracer particles.
+- [`real_eg_1_PVA_implement.R`](code/real-data/real_eg_1_PVA_implement.R) analyzes experiments on a 4% polyvinyl alcohol (PVA) solution using tracer particles of different sizes.
+- [`real_eg_2_PEG_hydrogel_implement.R`](code/real-data/real_eg_2_PEG_hydrogel_implement.R) analyzes tetraPEG hydrogel experiments at six selected times, spanning the transition from early fluid-like behavior to increasingly constrained particle dynamics.
+- [`real_eg_3_snail_mucin_implement.R`](code/real-data/real_eg_3_snail_mucin_implement.R) analyzes a snail mucin sample mixed with tracer particles.
 
+The corresponding plotting scripts reproduce the figures using the provided presaved records:
+
+- [`real_eg_1_PVA_plot.R`](code/real-data/real_eg_1_PVA_plot.R)
+- [`real_eg_2_PEG_hydrogel_plot.R`](code/real-data/real_eg_2_PEG_hydrogel_plot.R)
+- [`real_eg_3_snail_mucin_plot.R`](code/real-data/real_eg_3_snail_mucin_plot.R)
+  
 ## Repository structure
 
-```text
 MF-AIUQ/
 ├── README.md
 ├── code/
 │   ├── simulations/
-│   │   └── simulation.R
+│   │   ├── simulation_implement.R
+│   │   └── simulation_plot.R
 │   └── real-data/
-│       ├── real_eg_1_PVA.R
-│       ├── real_eg_2_PEG_hydrogel.R
-│       └── real_eg_3_snail_mucin.R
+│       ├── real_eg_1_PVA_implement.R
+│       ├── real_eg_1_PVA_plot.R
+│       ├── real_eg_2_PEG_hydrogel_implement.R
+│       ├── real_eg_2_PEG_hydrogel_plot.R
+│       ├── real_eg_3_snail_mucin_implement.R
+│       └── real_eg_3_snail_mucin_plot.R
 ├── data/
-│   └── example_video.tif
+│   ├── example_video.tif
+│   ├── 4pct_PVA_1um_25C_inset.tif
+│   ├── 4pct_PVA_200nm_25C_inset.tif
+│   ├── 4pct_PVA_100nm_25C_inset.tif
+│   └── 4pct_PVA_100nm_25C_BF_inset.tif
+├── results/
+│   ├── DDM_UQ_records/
+│   ├── MF_AIUQ_records/
+│   ├── MPT_records/
+│   └── GSER_records/
 └── docs/
     ├── MF_AIUQ_examples.Rmd
-    └── MF_AIUQ_examples.html
-```
+    ├── MF_AIUQ_examples.html
+    └── images/
+        └── MF_AIUQ_workflow.png
 
 ## Citation
 
