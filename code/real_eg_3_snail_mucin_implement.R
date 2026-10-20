@@ -30,7 +30,7 @@ mindt = 0.3 # Time interval between consecutive frames in seconds
 pxsz = 0.1465 # Pixel size in micrometers per pixel
 
 # Load the microscopy video
-intensity=suppressWarnings(readTIF(paste0("data/", file_name, ".tif")))
+intensity=suppressWarnings(readTIF(paste0("../data/", file_name, ".tif")))
 # Estimate the MSD, its 95% confidence interval, and the storage and loss moduli
 M = 200 # Number of tracer particles
 sam_mf = SAM(intensity = intensity, intensity_str = "SST_array", M = M, mindt = mindt, pxsz = pxsz,
