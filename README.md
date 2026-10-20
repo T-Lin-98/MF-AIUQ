@@ -1,4 +1,4 @@
-# MF-AIUQ: Model-Free *Ab Initio* Uncertainty Quantification in Scattering analysis of Microscopy
+# MF-AIUQ: Model-Free *Ab Initio* Uncertainty Quantification in Scattering Analysis of Microscopy
 
 
 [![R](https://img.shields.io/badge/R-276DC3?logo=r&logoColor=white)](https://www.r-project.org/)
