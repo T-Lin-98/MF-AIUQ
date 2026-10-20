@@ -124,6 +124,7 @@ MF-AIUQ/
 - a mixture of Ornstein–Uhlenbeck and fractional Brownian motion.
 
 Select the desired scenario by following the comments in the script. 
+
 The corresponding plotting script [`simulation_plot.R`](code/simulations/simulation_plot.R) reproduces the figures using the provided presaved records.
 
 ### Experimental analyses
