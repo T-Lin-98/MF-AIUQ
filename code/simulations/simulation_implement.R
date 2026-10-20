@@ -4,7 +4,7 @@ library(AIUQ)
 # Select one scenario:
 # "Slow BM", "Fast BM", "Subdiffusive FBM",
 # "Superdiffusive FBM", "OU", or "OU-FBM"
-scenario = "OU"
+scenario = "Slow BM"
 
 # Simulation and specific settings for plots
 if (scenario == "Slow BM") {
