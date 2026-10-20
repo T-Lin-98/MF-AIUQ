@@ -1,98 +1,58 @@
-# Load required packages
-library(AIUQ)
-library(bioimagetools)
+# Plot the results using the provided records.
+# The working directory should be the code/ folder in the downloaded MF-AIUQ repository.
+# Check the current working directory with:
+# getwd()
 
-# Set the working directory to the root directory of the downloaded repository.
-# This directory should contain the code/, data/, and results/ folders.
-# Replace the example path below with the path to the repository on your computer.
-#
-# Example for macOS or Linux:
-# setwd("/Users/your_name/Desktop/repository-root")
-#
-# Example for Windows:
-# setwd("C:/Users/your_name/Desktop/repository-root")
+# If necessary, replace the example path below with the location of the
+# code/ folder on your computer.
 
-setwd("/path/to/repository-root")
+# macOS or Linux:
+# setwd("/path/to/MF-AIUQ/code")
 
-# Set TRUE to run MF-AIUQ using the microscopy video.
-# Set FALSE to use the provided MF-AIUQ and GSER records.
-run_MFAIUQ = FALSE
+# Windows:
+# setwd("C:/path/to/MF-AIUQ/code")
 
-# Download the microscopy video from Zenodo (link) and place the TIFF file
-# in the data/ folder at the root of this repository.
-#
 # Expected directory structure:
-# repository-root/
-# ├── code/
+# MF-AIUQ/
+# ├── code/    <- working directory
 # ├── data/
 # └── results/
 
 file_name = "snail_mucin"
 
-mindt = 0.3 # Time interval between consecutive frames in seconds
-pxsz = 0.1465 # Pixel size in micrometers per pixel
+# Load the provided MF-AIUQ results
+MFAIUQ_records = read.csv(paste0("../results/MF_AIUQ_records/MSD_", file_name, ".csv"), header = T)
+d_input = as.matrix(MFAIUQ_records$d_input)[-1]
+MSD_MFAIUQ = as.matrix(MFAIUQ_records$n_par_AIUQ)[-1]
+MSD_lower = as.matrix(MFAIUQ_records$lower)[-1]
+MSD_upper = as.matrix(MFAIUQ_records$upper)[-1]
 
-if (run_MFAIUQ) {
-  # Load the microscopy video
-  intensity=suppressWarnings(readTIF(paste0("data/", file_name, ".tif")))
-
-  # Estimate the MSD, its 95% confidence interval, and the storage and loss moduli
-  M = 200 # Number of tracer particles
-  sam_mf = SAM(intensity = intensity, intensity_str = "SST_array", M = M, mindt = mindt, pxsz = pxsz,
-               model_free_estimation = TRUE, uncertainty = TRUE, estimate_moduli = TRUE)
-
-  # MF-AIUQ results
-  d_input = sam_mf@d_input[-1]
-  MSD_MFAIUQ = sam_mf@msd_est[-1]
-  MSD_lower = sam_mf@msd_lower[-1]
-  MSD_upper = sam_mf@msd_upper[-1]
-
-  # GSER results obtained using MF-AIUQ
-  GSER_MF_AIUQ = data.frame(omega = sam_mf@omega, Gp = sam_mf@Gp, Gpp = sam_mf@Gpp)
-} else {
-  # Read the provided MF-AIUQ results
-  MFAIUQ_records = read.csv(paste0("results/MF_AIUQ_records/MSD_", file_name, ".csv"), header = T)
-  d_input = as.matrix(MFAIUQ_records$d_input)[-1]
-  MSD_MFAIUQ = as.matrix(MFAIUQ_records$n_par_AIUQ)[-1]
-  MSD_lower = as.matrix(MFAIUQ_records$lower)[-1]
-  MSD_upper = as.matrix(MFAIUQ_records$upper)[-1]
-
-  # Read the provided GSER results obtained using MF-AIUQ
-  GSER_MF_AIUQ = read.csv("results/GSER_records/Gp_Gpp_MF_AIUQ.csv", header = T)
-}
-
-
-# Plot
-tau_MPT = read.csv("results/MPT_records/snail_mucin_tau.csv", header = F)
+# Load the MPT results
+tau_MPT = read.csv("../results/MPT_records/snail_mucin_tau.csv", header = F)
 tau_MPT = as.matrix(tau_MPT)
-MSD_MPT = read.csv("results/MPT_records/snail_mucin_MSD.csv", header = F)
+MSD_MPT = read.csv("../results/MPT_records/snail_mucin_MSD.csv", header = F)
 MSD_MPT = as.matrix(MSD_MPT)
 
-MPT_sp = read.csv(paste0("results/MPT_records/MPT_MSD_spline_snail_mucin.csv"), header = T)
+MPT_sp = read.csv(paste0("../results/MPT_records/MPT_MSD_spline_snail_mucin.csv"), header = T)
 tau_MPT_sp = MPT_sp$tau
 MSD_MPT_sp = MPT_sp$MSD_spline
 
-MPT_poly = read.csv(paste0("results/MPT_records/MPT_MSD_polynomial_snail_mucin.csv"), header = T)
+MPT_poly = read.csv(paste0("../results/MPT_records/MPT_MSD_polynomial_snail_mucin.csv"), header = T)
 MSD_MPT_poly = as.matrix(MPT_poly$MSD_MPT_poly)
 
-DDMUQ_records = read.csv(paste0("results/DDM_UQ_records/DDMUQ_snail_mucin_MSD.csv"), header = T)
+# Load the DDM-UQ results
+DDMUQ_records = read.csv(paste0("../results/DDM_UQ_records/DDMUQ_snail_mucin_MSD.csv"), header = T)
 tau_DDMUQ = as.matrix(DDMUQ_records[,1])
 MSD_DDMUQ = as.matrix(DDMUQ_records[,2])
 
-GSER_bulk = read.csv("results/GSER_records/Bulk Rheology Result_mucin.csv", header = T)
-GSER_MF_AIUQ = read.csv("results/GSER_records/Gp_Gpp_MF_AIUQ.csv", header = T)
-GSER_MPT_poly = read.csv("results/GSER_records/Gp_Gpp_MPT_poly.csv", header = T)
-GSER_MPT_spline = read.csv("results/GSER_records/Gp_Gpp_MPT_spline.csv", header = T)
-
-idx = which(MSD_MPT > 0)
-n = length(idx)
-MSD_ln_dev_est = numeric(n)
-ln_MSD_est = log(MSD_MPT[idx])
-ln_time = log(d_input[idx])
-lm_ln_MSD_est = lm(ln_MSD_est ~ poly(ln_time, 4, raw=TRUE))
-MSD_MPT_poly = exp(predict(lm_ln_MSD_est))
+# G' and G''
+GSER_bulk = read.csv("../results/GSER_records/Bulk Rheology Result_mucin.csv", header = T)
+GSER_MF_AIUQ = read.csv("../results/GSER_records/Gp_Gpp_MF_AIUQ.csv", header = T)
+GSER_MPT_poly = read.csv("../results/GSER_records/Gp_Gpp_MPT_poly.csv", header = T)
+GSER_MPT_spline = read.csv("../results/GSER_records/Gp_Gpp_MPT_spline.csv", header = T)
 
 
+# Plot
 xlim_l = min(d_input)
 xlim_u = max(d_input) + 2
 ylim_l = min(0.001, min(MSD_lower), MSD_MPT) * 0.4
@@ -139,7 +99,8 @@ legend("bottomright",
        y.intersp = 1.1,
        seg.len = 1.4)
 
-
+# G' and G'' MF-AIUQ
+par(mar = c(3.9, 5.6, 1.5, 1.5), mgp = c(3, 1, 0))
 xlim_l = 0.001
 xlim_u = max(GSER_MF_AIUQ$omega, GSER_bulk$omega_Gp, GSER_bulk$omega_Gpp) * 2
 ylim_l = 0.001
@@ -184,7 +145,8 @@ legend("bottomright",
        bty = "n",
        cex = 1.2)
 
-
+# G' and G'' for MPT polynomial
+par(mar = c(3.9, 5.6, 1.5, 1.5), mgp = c(3, 1, 0))
 xlim_l = 0.001
 xlim_u = max(GSER_MPT_poly$omega, GSER_bulk$omega_Gp, GSER_bulk$omega_Gpp) * 2
 ylim_l = 0.001
@@ -230,8 +192,8 @@ legend("bottomright",
        bty = "n",
        cex = 1.2)
 
-
-
+# G' and G'' for MPT spline
+par(mar = c(3.9, 5.6, 1.5, 1.5), mgp = c(3, 1, 0))
 xlim_l = 0.001
 xlim_u = max(GSER_MPT_spline$omega, GSER_bulk$omega_Gp, GSER_bulk$omega_Gpp) * 2
 ylim_l = 0.001

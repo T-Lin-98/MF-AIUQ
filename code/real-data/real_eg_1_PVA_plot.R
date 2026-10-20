@@ -1,119 +1,88 @@
 # Load required packages
-library(AIUQ)
 library(bioimagetools)
 
-# Set the working directory to the root directory of the downloaded repository.
-# This directory should contain the code/, data/, and results/ folders.
-# Replace the example path below with the path to the repository on your computer.
-#
-# Example for macOS or Linux:
-# setwd("/Users/your_name/Desktop/repository-root")
-#
-# Example for Windows:
-# setwd("C:/Users/your_name/Desktop/repository-root")
+# Plot the results using the provided records.
+# The working directory should be the code/ folder in the downloaded MF-AIUQ repository.
+# Check the current working directory with:
+# getwd()
 
-setwd("/path/to/repository-root")
+# If necessary, replace the example path below with the location of the
+# code/ folder on your computer.
 
-# Set TRUE to run MF-AIUQ using the microscopy video.
-# Set FALSE to use the provided MF-AIUQ records.
-run_MFAIUQ = FALSE
+# macOS or Linux:
+# setwd("/path/to/MF-AIUQ/code")
 
-# Download the microscopy videos from Zenodo (link) and place the TIFF files
-# in the data/ folder at the root of this repository.
-#
+# Windows:
+# setwd("C:/path/to/MF-AIUQ/code")
+
 # Expected directory structure:
-# repository-root/
-# ├── code/
-# └── data/
+# MF-AIUQ/
+# ├── code/    <- working directory
+# ├── data/
 # └── results/
-#
+
 # Select one experiment:
 # "1 um", "200 nm", "100 nm", or "100 nm BF"
 scenario = "1 um"
 
 if (scenario == "1 um") {
   file_name = "4pct_PVA_1um_25C"
-  b_truth = 0.0759
-  plot_name = "1um"
-  ylim_l = min(MSD_lower) * 0.7
-  legend_text = latex2exp::TeX("1 $\\mu$m")
 } else if (scenario == "200 nm") {
   file_name = "4pct_PVA_200nm_25C"
-  b_truth = 0.3795
-  plot_name = "200nm"
-  ylim_l = min(MSD_lower) * 0.1
-  legend_text = "200 nm"
 } else if (scenario == "100 nm") {
   file_name = "4pct_PVA_100nm_25C"
-  b_truth = 0.7589
-  plot_name = "100nm"
-  ylim_l = min(MSD_lower) * 0.05
-  legend_text = "100 nm"
 } else if (scenario == "100 nm BF") {
   file_name = "4pct_PVA_100nm_25C_BF"
-  b_truth = 0.7589
-  plot_name = "100nm_BF"
-  ylim_l = min(MSD_lower) * 0.05
-  legend_text = "100 nm BF"
 }
 
-# Load the microscopy video from the data/ folder
-intensity=suppressWarnings(readTIF(paste0("data/", file_name, ".tif")))
+# Load the provided MF-AIUQ records
+MFAIUQ_records = read.csv(paste0("../results/MF_AIUQ_records/MSD_", file_name, ".csv"), header = T)
+d_input = as.matrix(MFAIUQ_records$d_input)[-1]
+truth = as.matrix(MFAIUQ_records$truth)[-1]
+MSD_MFAIUQ = as.matrix(MFAIUQ_records$n_par_AIUQ)[-1]
+MSD_lower = as.matrix(MFAIUQ_records$lower)[-1]
+MSD_upper = as.matrix(MFAIUQ_records$upper)[-1]
 
-mindt = 0.0309 # Time interval between consecutive frames in seconds
-pxsz =0.2930 # Pixel size in micrometers
-
-if (run_MFAIUQ) {
-  # Estimate the MSD and its 95% confidence interval using MF-AIUQ
-  M = 100 # Number of tracer particles
-  sam_mf = SAM(intensity = intensity, intensity_str = "SST_array", M = M, mindt = mindt, pxsz = pxsz,
-               model_free_estimation = TRUE, uncertainty = TRUE)
-
-  # MF-AIUQ results
-  d_input = sam_mf@d_input[-1]
-  MSD_MFAIUQ = sam_mf@msd_est[-1]
-  MSD_lower = sam_mf@msd_lower[-1]
-  MSD_upper = sam_mf@msd_upper[-1]
-
-  # Calculate the reference MSD
-  truth = d_input*b_truth
-} else {
-  # Read the provided MF-AIUQ records
-  MFAIUQ_records = read.csv(paste0("results/MF_AIUQ_records/MSD_", file_name, ".csv"), header = T)
-  d_input = as.matrix(MFAIUQ_records$d_input)[-1]
-  truth = as.matrix(MFAIUQ_records$truth)[-1]
-  MSD_MFAIUQ = as.matrix(MFAIUQ_records$n_par_AIUQ)[-1]
-  MSD_lower = as.matrix(MFAIUQ_records$lower)[-1]
-  MSD_upper = as.matrix(MFAIUQ_records$upper)[-1]
-}
-
-# Read the MPT results
-tau_MPT = read.csv(paste0("results/MPT_records/", file_name, "_tau.csv"), header = F)
+# Load the MPT results
+tau_MPT = read.csv(paste0("../results/MPT_records/", file_name, "_tau.csv"), header = F)
 tau_MPT = as.matrix(tau_MPT)
-MSD_MPT = read.csv(paste0("results/MPT_records/", file_name, "_MSD.csv"), header = F)
+MSD_MPT = read.csv(paste0("../results/MPT_records/", file_name, "_MSD.csv"), header = F)
 MSD_MPT = as.matrix(MSD_MPT)
 
-# Read the DDM-UQ results
+# Load the DDM-UQ results
 if (file_name == "4pct_PVA_100nm_25C_BF") {
-  DDMUQ_records = read.csv(paste0("results/DDM_UQ_records/DDMUQ_", file_name, ".csv"), header = T)
+  DDMUQ_records = read.csv(paste0("../results/DDM_UQ_records/DDMUQ_", file_name, ".csv"), header = T)
   tau_DDMUQ = as.matrix(DDMUQ_records[,1])
   MSD_DDMUQ = as.matrix(DDMUQ_records[,2])
 } else {
-  DDMUQ_records = read.csv(paste0("results/DDM_UQ_records/DDMUQ_", file_name, ".csv"), header = F)
+  DDMUQ_records = read.csv(paste0("../results/DDM_UQ_records/DDMUQ_", file_name, ".csv"), header = F)
   tau_DDMUQ = as.matrix(DDMUQ_records[1,])
   MSD_DDMUQ = as.matrix(DDMUQ_records[2,])
 }
 
+# Load the inset intensity frame from the data/ folder
+img = suppressWarnings(readTIF(paste0("../data/", file_name, "_inset.tif")))[,,1]
 
 # Plot
-img = intensity[,,250]
-img = (img-min(img))/diff(range(img))
+if (scenario == "1 um") {
+  ylim_l = min(MSD_lower) * 0.7
+  legend_text = latex2exp::TeX("1 $\\mu$m")
+} else if (scenario == "200 nm") {
+  ylim_l = min(MSD_lower) * 0.1
+  legend_text = "200 nm"
+} else if (scenario == "100 nm") {
+  ylim_l = min(MSD_lower) * 0.05
+  legend_text = "100 nm"
+} else if (scenario == "100 nm BF") {
+  ylim_l = min(MSD_lower) * 0.05
+  legend_text = "100 nm BF"
+}
+
 par(mar = c(4.1, 5.6, 1.5, 1.5), mgp = c(3.2, 1, 0), xpd = NA)
+img = (img-min(img))/diff(range(img))
+pxsz =0.2930 
 xlim_l = 0.0309
 xlim_u = max(d_input) + 2
-ylim_l = min(MSD_lower) * 0.05
-ylim_l = min(MSD_lower) * 0.05 # 0.7 for 1um 0.1 for 200nm 0.05 for 100nm
-
 ylim_u = max(range((c(truth, MSD_MFAIUQ, MSD_MPT, MSD_DDMUQ)))[2], max(MSD_upper)) * 1.1
 plot(d_input, truth, log = "xy", type = "n",
      xlab = expression(Delta*t ~ "[s]"), ylab = expression("<" * Delta*x^2 * "(" * Delta*t * ")" * ">" ~ "[" * mu*m^2 * "]"),
@@ -139,7 +108,6 @@ points(tau_DDMUQ, MSD_DDMUQ, pch = 2, col = "darkgreen", cex = 1.1, lwd = 1.1)
 lines(tau_MPT, MSD_MPT, col = "#E76F51", lwd = 3)
 lines(d_input, truth, col = "black", lwd = 3)
 polygon(c(d_input, rev(d_input)), c(MSD_lower, rev(MSD_upper)), col = rgb(0.5, 0.5, 0.5, 0.5), border = NA)
-
 # Microscopy image inset
 img_raster = as.raster(img)
 oldpar = par(no.readonly = TRUE)
@@ -152,6 +120,8 @@ field_um = pxsz * 512
 bar_frac = scale_um/field_um
 segments(0.62, 0.12, 0.62 + bar_frac, 0.12, col = "white", lwd = 5, lend = "butt")
 par(oldpar)
-
 legend("topleft", legend = legend_text,
        bty = "n", text.font = 1.8, cex = 2.2, inset = c(-0.1, -0.04))
+
+
+
