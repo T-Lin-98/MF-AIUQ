@@ -19,6 +19,8 @@ Lin, T., Lee, J., Helgeson, M., Valentine, M. T., Luo, Y., & Gu, M. (2026). Mode
 
 The article is available on [arXiv](https://arxiv.org/abs/2605.29424).
 
+The code is prepared by [Tong Lin](mailto:tong_lin@ucsb.edu) and [Mengyang Gu](mailto:mengyang@pstat.ucsb.edu).
+
 MF-AIUQ estimates the mean squared displacement (MSD) and its uncertainty directly from microscopy videos. 
 The estimated MSD and confidence interval can be used to further compute the viscoelastic storage and loss moduli through the generalized
 Stokes–Einstein relation. MF-AIUQ is implemented in the
